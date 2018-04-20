@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
     - name: master
-      image: hawickhuang/redis:4.0.9
+      image: hawickhuang/ha-redis:4.0.6-1.0.0
       imagePullPolicy: Always
       env:
         - name: MASTER
@@ -23,7 +23,7 @@ spec:
         - mountPath: /data
           name: data
     - name: sentinel
-      image: hawickhuang/redis:4.0.9
+      image: hawickhuang/ha-redis:4.0.6-1.0.0
       imagePullPolicy: Always
       env:
         - name: SENTINEL

@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: hawickhuang/redis:4.0.9 
+        image: hawickhuang/ha-redis:4.0.6-1.0.0
         imagePullPolicy: Always
         ports:
         - containerPort: 6379
@@ -26,5 +26,5 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: redis-pv-claim
+            claimName: redis-pvc
 
