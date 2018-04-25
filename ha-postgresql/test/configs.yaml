@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: test
+  name: test-config
+  labels:
+    app: test
+data:
+  app.db.database: "test.test"
+  app.db.cluster.name: "test_cluster"
+  app.db.cluster.replication.db: "replica_db"
+  app.db.pool.backends: "0:test-db-node-0.test::::,1:test-db-node-1.test::::,2:test-db-node-2.test::::"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: test
+  name: test-secret
+type: Opaque
+data:
+  app.db.user: "dGVzdA==" #wide
+  app.db.password: "MTIzNDU2" #pass
+  app.db.cluster.replication.user: "dGVzdA==" #replica_user
+  app.db.cluster.replication.password: "MTIzNDU2" #replica_pass
+  app.db.pool.users: "dGVzdDoxMjM0NTY=" #wide:pass
+  app.db.pool.pcp.user: "dGVzdA==" #pcp_user
+  app.db.pool.pcp.password: "MTIzNDU2" #pcp_pass%
