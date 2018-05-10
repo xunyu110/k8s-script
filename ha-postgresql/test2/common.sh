@@ -38,8 +38,8 @@ function env_check_err() {
 }
 
 function create_storage {
-    env_check_err "CCP_STORAGE_CAPACITY"
-    env_check_err "CCP_STORAGE_MODE"
+    # env_check_err "CCP_STORAGE_CAPACITY"
+    # env_check_err "CCP_STORAGE_MODE"
 
     if [ ! -z "$CCP_STORAGE_CLASS" ]; then
         echo_info "CCP_STORAGE_CLASS is set. Using the existing storage class for the PV."

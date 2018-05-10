@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-export CCP_STORAGE_CAPACITY=5Gi
-export CCP_STORAGE_MODE=ReadWriteMany
-export CCP_STORAGE_PATH=/Users/hawick/pgdata-0
-
 while getopts ":n" opt; do
     case $opt in
         n)
@@ -30,6 +26,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/common.sh
 
 ${DIR}/cleanup.sh
+echo "32232"
 
 create_storage "statefulset"
 if [[ $? -ne 0 ]]

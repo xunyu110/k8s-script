@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: statefulset-pgdata
+  namespace: kong
+spec:
+  #storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  volumeName: statefulset-pgdata
+  resources:
+    requests:
+      storage: 50Gi
