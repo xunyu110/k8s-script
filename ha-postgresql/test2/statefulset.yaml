@@ -104,4 +104,4 @@ spec:
       volumes:
       - name: pgdata
         persistentVolumeClaim:
-          claimName: "statefulset-pgdata"
+          claimName: "statefulset-pgdata-pvc"

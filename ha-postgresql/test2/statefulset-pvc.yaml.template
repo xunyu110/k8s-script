@@ -1,12 +1,11 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata: 
- name: "statefulset-pgdata"
+  name: statefulset-pgdata-pvc
 spec: 
- selector: 
-  matchLabels: 
-   name: "statefulset-pgdata"
- accessModes: ["ReadWriteMany"]
- resources: 
-  requests: 
-   storage: "$STORAGE_CAPACITY"
+  volumeName: "statefulset-pgdata"
+  storageClassName: manual
+  accessModes: ["ReadWriteMany"]
+  resources: 
+    requests: 
+      storage: "$STORAGE_CAPACITY"

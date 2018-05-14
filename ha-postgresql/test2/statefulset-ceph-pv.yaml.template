@@ -9,7 +9,7 @@ spec:
     storage: "${STORAGE_CAPACITY}"
   accessModes: ["ReadWriteMany"]
   cephfs:
-    monitors: [$MONITORS]
+    monitors: ["$MONITORS"]
     path: /k8s/app-files/$NAMESPACE
     user: $NAMESPACE
     secretRef:

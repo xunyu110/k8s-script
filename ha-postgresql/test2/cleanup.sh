@@ -29,13 +29,19 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/common.sh
 echo_info "Cleaning up.."
 
+kubectl delete clusterrolebinding statefulset-sa
+
 if [ ! -z ${NAMESPACE} ]; then
-    kubectl delete namespace $NAMESPACE
-    kubectl delete pv statefulset-pgdata
+    kubectl delete -f statefulset.yaml -n $NAMESPACE
+    if [ ! -z "$STORAGE_CLASS" ]; then
+        kubectl delete -f statefulset-ceph-pv.yaml -n $NAMESPACE
+        kubectl delete -f statefulset-ceph-pvc.yaml -n $NAMESPACE
+    else
+        kubectl delete -f statefulset-pv.yaml -n $NAMESPACE
+        kubectl delete -f statefulset-pvc.yaml -n $NAMESPACE
+    fi  
 else
-    kubectl delete clusterrolebinding statefulset-sa
     kubectl delete -f statefulset.yaml
-    
     if [ ! -z "$STORAGE_CLASS" ]; then
         kubectl delete -f statefulset-ceph-pv.yaml
         kubectl delete -f statefulset-ceph-pvc.yaml
@@ -45,4 +51,4 @@ else
     fi  
 fi
 
-rm -f $DIR/statefulset-pv.yaml $DIR/statefulset-pvc.yaml $DIR/statefulset-ceph-pv.yaml $DIR/statefulset-ceph-pvc.yaml
+rm -f $DIR/statefulset-pv.yaml $DIR/statefulset-pv1.yaml $DIR/statefulset-pvc.yaml $DIR/statefulset-ceph-pv.yaml $DIR/statefulset-ceph-pvc.yaml

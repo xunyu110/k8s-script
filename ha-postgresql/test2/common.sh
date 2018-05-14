@@ -39,13 +39,11 @@ function env_check_err() {
 
 function create_storage {
     env_check_err "STORAGE_CAPACITY"
-    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pv.yaml.template > $DIR/statefulset-pv.yaml
-    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pvc.yaml.template > $DIR/statefulset-pvc.yaml
-    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pv.yaml.template > $DIR/statefulset-ceph-pv.yaml
-    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pvc.yaml.template > $DIR/statefulset-ceph-pvc.yaml
 
     if [ ! -z "$STORAGE_CLASS" ]; then
         echo_info "CCP_STORAGE_CLASS is set. Using the existing storage class for the PV."
+        sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pv.yaml.template > $DIR/statefulset-ceph-pv.yaml
+        sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pvc.yaml.template > $DIR/statefulset-ceph-pvc.yaml
         kubectl create -f $DIR/$1-ceph-pv.yaml
 
         if [ -z "$NAMESPACE" ]; then
@@ -57,6 +55,12 @@ function create_storage {
         echo_info "Created ceph volume"
     else
         echo_info "STORAGE_CLASS not set. Creating HostPath based storage volumes."
+        mkdir $DIR/pgdata-0
+        export MOUNT_PATH=$DIR/pgdata-0
+        sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pv.yaml.template > $DIR/statefulset-pv1.yaml
+        sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pvc.yaml.template > $DIR/statefulset-pvc.yaml
+        sed 's@$MOUNT_PATH@'"$MOUNT_PATH"'@' $DIR/statefulset-pv1.yaml > $DIR/statefulset-pv.yaml
+        
         kubectl create -f $DIR/$1-pv.yaml
 
         if [ -z "$NAMESPACE" ]; then
@@ -65,7 +69,7 @@ function create_storage {
             kubectl create -f $DIR/$1-pvc.yaml -n $NAMESPACE
         fi
         
-        echo_info "Creating hostpath volume"
+        echo_info "Created hostpath volume"
     fi
 
 }
