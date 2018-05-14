@@ -38,22 +38,34 @@ function env_check_err() {
 }
 
 function create_storage {
-    # env_check_err "CCP_STORAGE_CAPACITY"
-    # env_check_err "CCP_STORAGE_MODE"
+    env_check_err "STORAGE_CAPACITY"
+    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pv.yaml.template > $DIR/statefulset-pv.yaml
+    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-pvc.yaml.template > $DIR/statefulset-pvc.yaml
+    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pv.yaml.template > $DIR/statefulset-ceph-pv.yaml
+    sed 's@$STORAGE_CAPACITY@'"$STORAGE_CAPACITY"'@' $DIR/statefulset-ceph-pvc.yaml.template > $DIR/statefulset-ceph-pvc.yaml
 
-    if [ ! -z "$CCP_STORAGE_CLASS" ]; then
+    if [ ! -z "$STORAGE_CLASS" ]; then
         echo_info "CCP_STORAGE_CLASS is set. Using the existing storage class for the PV."
-        kubectl create -f $DIR/$1-pvc-sc.json
-        echo_info "Creating the example components.."
-    elif [ ! -z "$CCP_NFS_IP" ]; then
-        echo_info "CCP_NFS_IP is set. Creating NFS based storage volumes."
-        kubectl create -f $DIR/$1-pv-nfs.json
-        expenv -f $DIR/$1-pvc.json | kubectl create -f -
-        echo_info "Creating the example components.."
+        kubectl create -f $DIR/$1-ceph-pv.yaml
+
+        if [ -z "$NAMESPACE" ]; then
+            kubectl create -f $DIR/$1-ceph-pvc.yaml
+        else
+            kubectl create -f $DIR/$1-ceph-pvc.yaml -n $NAMESPACE
+        fi
+
+        echo_info "Created ceph volume"
     else
-        echo_info "CCP_NFS_IP and CCP_STORAGE_CLASS not set. Creating HostPath based storage volumes."
+        echo_info "STORAGE_CLASS not set. Creating HostPath based storage volumes."
         kubectl create -f $DIR/$1-pv.yaml
-        kubectl create -f $DIR/$1-pvc.yaml
-        echo_info "Creating the example components.."
+
+        if [ -z "$NAMESPACE" ]; then
+            kubectl create -f $DIR/$1-pvc.yaml
+        else
+            kubectl create -f $DIR/$1-pvc.yaml -n $NAMESPACE
+        fi
+        
+        echo_info "Creating hostpath volume"
     fi
+
 }

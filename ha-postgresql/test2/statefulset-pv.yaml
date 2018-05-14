@@ -6,7 +6,7 @@ metadata:
   name: "statefulset-pgdata"
 spec: 
  capacity: 
-  storage: "5Gi"
+  storage: "10Gi"
  accessModes: ["ReadWriteMany"]
  hostPath: 
   path: "/Users/hawick/pgdata-0"

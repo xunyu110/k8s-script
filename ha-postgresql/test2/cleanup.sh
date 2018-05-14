@@ -11,31 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# while getopts ":n" opt; do
-#     case $opt in
-#         n)
-#             NAMESPACE="$OPTARG"
-#             kubectl create namespace $NAMESPACE
-#             ;;
-#     esac
-# done
-echo "sds"
+while getopts "n:t:" opt; do
+    case $opt in
+        n)
+            export NAMESPACE=${OPTARG}
+            ;;
+        t)
+            export STORAGE_CLASS=${OPTARG}
+            ;;
+        *)
+            ;;
+    esac
+done
+
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/common.sh
 echo_info "Cleaning up.."
 
-# if [ -z "$NAMESPACE" ]; then
-#   kubectl delete namespace $NAMESPACE
-#   kubectl delete pv statefulset-pgdata
-#   exit 0
-# fi
-
-kubectl delete statefulset statefulset
-kubectl delete sa statefulset-sa
-kubectl delete clusterrolebinding statefulset-sa
-kubectl delete pvc statefulset-pgdata
-if [ -z "$CCP_STORAGE_CLASS" ]; then
-  kubectl delete pv statefulset-pgdata
+if [ ! -z ${NAMESPACE} ]; then
+    kubectl delete namespace $NAMESPACE
+    kubectl delete pv statefulset-pgdata
+    exit 0
+else
+    kubectl delete clusterrolebinding statefulset-sa
+    kubectl delete -f statefulset.yaml
+    
+    if [ ! -z "$STORAGE_CLASS" ]; then
+        kubectl delete -f statefulset-ceph-pv.yaml
+        kubectl delete -f statefulset-ceph-pvc.yaml
+    else
+        kubectl delete -f statefulset-pv.yaml
+        kubectl delete -f statefulset-pvc.yaml
+    fi  
 fi
-kubectl delete service statefulset statefulset-primary statefulset-replica
-kubectl delete pod statefulset-0 statefulset-1
+
+rm -f $DIR/statefulset-pv.yaml $DIR/statefulset-pvc.yaml $DIR/statefulset-ceph-pv.yaml $DIR/statefulset-ceph-pvc.yaml

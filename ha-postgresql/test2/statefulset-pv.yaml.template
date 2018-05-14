@@ -6,9 +6,8 @@ metadata:
   name: "statefulset-pgdata"
 spec: 
  capacity: 
-  storage: "5Gi"
+  storage: "$STORAGE_CAPACITY"
  accessModes: ["ReadWriteMany"]
- nfs: 
-  path: ""
-  server: ""
+ hostPath: 
+  path: "/Users/hawick/pgdata-0"
  persistentVolumeReclaimPolicy: Retain

@@ -11,22 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-while getopts ":n" opt; do
+while getopts "n:s:t:" opt; do
     case $opt in
         n)
-            NAMESPACE="$OPTARG"
+            export NAMESPACE=${OPTARG}
             kubectl create namespace $NAMESPACE
+            ;;
+        s)
+            export STORAGE_CAPACITY=${OPTARG}
+            ;;
+        t)
+            export STORAGE_CLASS=${OPTARG}
+            ;;
+        *)
             ;;
     esac
 done
 
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export MONITORS=""
 
 source ${DIR}/common.sh
 
-${DIR}/cleanup.sh
-echo "32232"
+# ${DIR}/cleanup.sh
 
 create_storage "statefulset"
 if [[ $? -ne 0 ]]
@@ -35,15 +43,21 @@ then
     exit 1
 fi
 
-# As of Kube 1.6, it is necessary to allow the service account to perform
-# a label command. For this example, we open up wide permissions
-# for all serviceaccounts. This is NOT for production!
+if [ ! -z ${NAMESPACE} ]; then
+    kubectl create clusterrolebinding statefulset-sa \
+    --clusterrole=cluster-admin \
+    --user=admin \
+    --user=kubelet \
+    --group=system:serviceaccounts \
+    --namespace=$NAMESPACE
 
-kubectl create clusterrolebinding statefulset-sa \
-  --clusterrole=cluster-admin \
-  --user=admin \
-  --user=kubelet \
-  --group=system:serviceaccounts \
-  --namespace=$NAMESPACE
+    kubectl create -f $DIR/statefulset.yaml -n $NAMESPACE
+else
+    kubectl create clusterrolebinding statefulset-sa \
+    --clusterrole=cluster-admin \
+    --user=admin \
+    --user=kubelet \
+    --group=system:serviceaccounts \
 
-kubectl create -f $DIR/statefulset.yaml
+    kubectl create -f $DIR/statefulset.yaml
+fi

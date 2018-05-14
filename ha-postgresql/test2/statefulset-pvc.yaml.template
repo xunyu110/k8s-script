@@ -3,8 +3,10 @@ apiVersion: v1
 metadata: 
  name: "statefulset-pgdata"
 spec: 
+ selector: 
+  matchLabels: 
+   name: "statefulset-pgdata"
  accessModes: ["ReadWriteMany"]
- #storageClassName: "$CCP_STORAGE_CLASS"
  resources: 
   requests: 
-   storage: "5Gi"
+   storage: "$STORAGE_CAPACITY"
