@@ -46,6 +46,4 @@ kubectl create clusterrolebinding statefulset-sa \
   --group=system:serviceaccounts \
   --namespace=$NAMESPACE
 
-kubectl create -f $DIR/statefulset-pv.yaml
-kubectl create -f $DIR/statefulset-pvc.yaml
 kubectl create -f $DIR/statefulset.yaml

@@ -52,8 +52,8 @@ function create_storage {
         echo_info "Creating the example components.."
     else
         echo_info "CCP_NFS_IP and CCP_STORAGE_CLASS not set. Creating HostPath based storage volumes."
-        kubectl create -f $DIR/$1-pv.json
-        kubectl create -f $DIR/$1-pvc.json
+        kubectl create -f $DIR/$1-pv.yaml
+        kubectl create -f $DIR/$1-pvc.yaml
         echo_info "Creating the example components.."
     fi
 }
