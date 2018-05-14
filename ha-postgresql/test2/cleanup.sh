@@ -32,7 +32,6 @@ echo_info "Cleaning up.."
 if [ ! -z ${NAMESPACE} ]; then
     kubectl delete namespace $NAMESPACE
     kubectl delete pv statefulset-pgdata
-    exit 0
 else
     kubectl delete clusterrolebinding statefulset-sa
     kubectl delete -f statefulset.yaml
