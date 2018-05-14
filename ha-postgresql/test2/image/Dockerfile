@@ -70,6 +70,7 @@ EXPOSE 5432
 
 ADD bin/postgres /opt/cpm/bin
 ADD bin/common /opt/cpm/bin
+ADD bin/backup /opt/cpm/bin
 ADD conf/postgres /opt/cpm/conf
 
 USER 26
