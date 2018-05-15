@@ -1,9 +1,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata: 
-  name: statefulset-pgdata-pvc
+  name: statefulset-data
 spec: 
-  volumeName: "statefulset-pgdata"
+  volumeName: "statefulset-data"
   storageClassName: manual
   accessModes: ["ReadWriteMany"]
   resources: 

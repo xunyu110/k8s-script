@@ -98,10 +98,14 @@ spec:
         - name: PG_ROOT_PASSWORD
           value: password
         volumeMounts:
-        - name: pgdata
+        - name: data
           mountPath: "/pgdata"
           readOnly: false
       volumes:
-      - name: pgdata
+      - name: data
         persistentVolumeClaim:
-          claimName: "statefulset-pgdata-pvc"
+          claimName: "statefulset-data"
+      securityContext:
+        fsGroup: 26
+        runAsUser: 26
+        # allowPrivilegeEscalation: false

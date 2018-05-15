@@ -24,12 +24,10 @@ while getopts "n:t:" opt; do
     esac
 done
 
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/common.sh
 echo_info "Cleaning up.."
 
-kubectl delete clusterrolebinding statefulset-sa
 
 if [ ! -z ${NAMESPACE} ]; then
     kubectl delete -f statefulset.yaml -n $NAMESPACE
@@ -50,5 +48,7 @@ else
         kubectl delete -f statefulset-pvc.yaml
     fi  
 fi
+
+kubectl delete clusterrolebinding statefulset-sa
 
 rm -f $DIR/statefulset-pv.yaml $DIR/statefulset-pv1.yaml $DIR/statefulset-pvc.yaml $DIR/statefulset-ceph-pv.yaml $DIR/statefulset-ceph-pvc.yaml

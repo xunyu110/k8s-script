@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata: 
-  name: "statefulset-pgdata"
+  name: "statefulset-data"
   labels:
-    name: "statefulset-pgdata"
+    name: "statefulset-data"
 spec: 
   storageClassName: manual
   capacity: 
